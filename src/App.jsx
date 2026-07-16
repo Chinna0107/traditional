@@ -1,0 +1,94 @@
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AppLayout } from './components/AppLayout';
+import { SplashScreen } from './components/SplashScreen';
+import { useStoreData } from './store/useStoreData';
+import { HomePage } from './pages/HomePage';
+import { CategoryListingPage } from './pages/CategoryListingPage';
+import { ProductDetailPage } from './pages/ProductDetailPage';
+import { CartPage } from './pages/CartPage';
+import { CheckoutPage } from './pages/CheckoutPage';
+import { OrderTrackingPage } from './pages/OrderTrackingPage';
+import { WishlistPage } from './pages/WishlistPage';
+import { ProfilePage } from './pages/ProfilePage';
+import { LoginPage } from './pages/LoginPage';
+import { SignupPage } from './pages/SignupPage';
+import { DashboardPage } from './pages/DashboardPage';
+import { AboutPage } from './pages/AboutPage';
+import { ContactPage } from './pages/ContactPage';
+import { MyOrdersPage } from './pages/MyOrdersPage';
+import { MyAddressesPage } from './pages/MyAddressesPage';
+import { AccountSettingsPage } from './pages/AccountSettingsPage';
+import { AdminLayout } from './components/admin/AdminLayout';
+import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
+import { AdminProductsPage } from './pages/admin/AdminProductsPage';
+import { AdminOrdersPage } from './pages/admin/AdminOrdersPage';
+import { AdminCustomersPage } from './pages/admin/AdminCustomersPage';
+import { AdminBannersPage } from './pages/admin/AdminBannersPage';
+import { AdminCouponsPage } from './pages/admin/AdminCouponsPage';
+import { AdminReportsPage } from './pages/admin/AdminReportsPage';
+import { AdminCategoriesPage } from './pages/admin/AdminCategoriesPage';
+
+function App() {
+  const [showSplash, setShowSplash] = useState(true);
+  const { fetchData } = useStoreData();
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return (
+    <>
+      {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
+      <div style={{ opacity: showSplash ? 0 : 1 }} className="transition-opacity duration-300">
+        <BrowserRouter>
+          <Routes>
+            {/* Auth pages — no layout */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+
+            {/* Admin — using AdminLayout */}
+            <Route path="/admin/*" element={
+              <AdminLayout>
+                <Routes>
+                  <Route path="/" element={<AdminDashboardPage />} />
+                  <Route path="/orders" element={<AdminOrdersPage />} />
+                  <Route path="customers" element={<AdminCustomersPage />} />
+                  <Route path="products" element={<AdminProductsPage />} />
+                  <Route path="categories" element={<AdminCategoriesPage />} />
+                  <Route path="banners" element={<AdminBannersPage />} />
+                  <Route path="/coupons" element={<AdminCouponsPage />} />
+                  <Route path="/reports" element={<AdminReportsPage />} />
+                </Routes>
+              </AdminLayout>
+            } />
+
+            {/* App pages — with AppLayout */}
+            <Route path="/*" element={
+              <AppLayout>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/category/:categoryId" element={<CategoryListingPage />} />
+                  <Route path="/product/:id" element={<ProductDetailPage />} />
+                  <Route path="/cart" element={<CartPage />} />
+                  <Route path="/checkout" element={<CheckoutPage />} />
+                  <Route path="/order-tracking/:orderId" element={<OrderTrackingPage />} />
+                  <Route path="/wishlist" element={<WishlistPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/dashboard" element={<DashboardPage />} />
+                  <Route path="/my-orders" element={<MyOrdersPage />} />
+                  <Route path="/my-addresses" element={<MyAddressesPage />} />
+                  <Route path="/account-settings" element={<AccountSettingsPage />} />
+                </Routes>
+              </AppLayout>
+            } />
+          </Routes>
+        </BrowserRouter>
+      </div>
+    </>
+  );
+}
+
+export default App;
