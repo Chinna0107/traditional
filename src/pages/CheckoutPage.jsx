@@ -4,6 +4,7 @@ import { ShieldCheck, Truck, CheckCircle, MapPin, CreditCard, ChevronLeft, UserC
 import { Header } from '../components/Header';
 import { useCartStore } from '../store/useCartStore';
 import { useAuthStore } from '../store/useAuthStore';
+import { useToastStore } from '../store/useToastStore';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
@@ -14,15 +15,16 @@ export function CheckoutPage() {
   const location = useLocation();
   const { items, getTotal, clearCart } = useCartStore();
   const { token, user } = useAuthStore();
+  const { showToast } = useToastStore();
   
   const [step, setStep] = useState(token ? 2 : 1); // 1: Auth, 2: Address, 3: Payment
   const [address, setAddress] = useState({
-    name: user?.name || 'Guest User',
-    line1: '123 Main Street',
-    city: 'Hyderabad',
-    state: 'Telangana',
-    pincode: '500001',
-    mobile: user?.phone || '9876543210'
+    name: user?.name || '',
+    line1: '',
+    city: '',
+    state: '',
+    pincode: '',
+    mobile: user?.phone || ''
   });
   const [paymentMethod, setPaymentMethod] = useState('razorpay');
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
@@ -93,12 +95,28 @@ export function CheckoutPage() {
     return res.json();
   };
 
+  const handleProceedToPayment = () => {
+    if (!address.name.trim() || !address.line1.trim() || !address.city.trim() || !address.state.trim() || !address.pincode.trim() || !address.mobile.trim()) {
+      showToast('Please fill all details. All fields are required.', 'error');
+      return;
+    }
+    if (!/^\d{6}$/.test(address.pincode)) {
+      showToast('Pincode must be 6 digits.', 'error');
+      return;
+    }
+    if (!/^\d{10}$/.test(address.mobile)) {
+      showToast('Phone number must be exactly 10 digits.', 'error');
+      return;
+    }
+    setStep(3);
+  };
+
   const handlePlaceOrder = async () => {
     setIsPlacingOrder(true);
     try {
       const res = await loadRazorpay();
       if (!res) {
-        alert('Razorpay SDK failed to load. Are you online?');
+        showToast('Razorpay SDK failed to load. Are you online?', 'error');
         setIsPlacingOrder(false);
         return;
       }
@@ -115,7 +133,7 @@ export function CheckoutPage() {
       const orderData = await orderRes.json();
 
       if (!orderData.success) {
-        alert('Failed to initialize payment');
+        showToast('Failed to initialize payment', 'error');
         setIsPlacingOrder(false);
         return;
       }
@@ -151,11 +169,11 @@ export function CheckoutPage() {
                   navigate(`/order-tracking/${createOrderData.order.order_number}`);
                 }, 2000);
               } else {
-                alert('Failed to place order after payment.');
+                showToast('Failed to place order after payment.', 'error');
                 setIsPlacingOrder(false);
               }
             } else {
-              alert('Payment verification failed');
+              showToast('Payment verification failed', 'error');
               setIsPlacingOrder(false);
             }
           } catch (err) {
@@ -283,30 +301,30 @@ export function CheckoutPage() {
               <div className="space-y-5">
                 <div>
                   <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Full Name</label>
-                  <input value={address.name} onChange={e => setAddress({...address, name: e.target.value})} className="w-full text-lg font-bold text-gray-900 border-b-2 border-gray-100 py-1 focus:outline-none focus:border-brand-orange transition-colors bg-transparent" />
+                  <input required value={address.name} onChange={e => setAddress({...address, name: e.target.value})} className="w-full text-lg font-bold text-gray-900 border-b-2 border-gray-100 py-1 focus:outline-none focus:border-brand-orange transition-colors bg-transparent" placeholder="Full Name" />
                 </div>
                 <div>
                   <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Address Line 1</label>
-                  <input value={address.line1} onChange={e => setAddress({...address, line1: e.target.value})} className="w-full text-base text-gray-700 border-b border-gray-200 py-1 focus:outline-none focus:border-brand-orange transition-colors bg-transparent" />
+                  <input required value={address.line1} onChange={e => setAddress({...address, line1: e.target.value})} className="w-full text-base text-gray-700 border-b border-gray-200 py-1 focus:outline-none focus:border-brand-orange transition-colors bg-transparent" placeholder="Address Line 1" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">City</label>
-                    <input value={address.city} onChange={e => setAddress({...address, city: e.target.value})} className="w-full text-base text-gray-700 border-b border-gray-200 py-1 focus:outline-none focus:border-brand-orange transition-colors bg-transparent" />
+                    <input required value={address.city} onChange={e => setAddress({...address, city: e.target.value})} className="w-full text-base text-gray-700 border-b border-gray-200 py-1 focus:outline-none focus:border-brand-orange transition-colors bg-transparent" placeholder="City" />
                   </div>
                   <div>
                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">State</label>
-                    <input value={address.state} onChange={e => setAddress({...address, state: e.target.value})} className="w-full text-base text-gray-700 border-b border-gray-200 py-1 focus:outline-none focus:border-brand-orange transition-colors bg-transparent" />
+                    <input required value={address.state} onChange={e => setAddress({...address, state: e.target.value})} className="w-full text-base text-gray-700 border-b border-gray-200 py-1 focus:outline-none focus:border-brand-orange transition-colors bg-transparent" placeholder="State" />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Pincode</label>
-                    <input value={address.pincode} onChange={e => setAddress({...address, pincode: e.target.value})} className="w-full text-base text-gray-700 border-b border-gray-200 py-1 focus:outline-none focus:border-brand-orange transition-colors bg-transparent" />
+                    <input type="text" maxLength={6} required value={address.pincode} onChange={e => setAddress({...address, pincode: e.target.value.replace(/\D/g, '')})} className="w-full text-base text-gray-700 border-b border-gray-200 py-1 focus:outline-none focus:border-brand-orange transition-colors bg-transparent" placeholder="Pincode" />
                   </div>
                   <div>
                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Mobile</label>
-                    <input value={address.mobile} onChange={e => setAddress({...address, mobile: e.target.value})} className="w-full text-base text-gray-700 border-b border-gray-200 py-1 focus:outline-none focus:border-brand-orange transition-colors bg-transparent" />
+                    <input type="text" maxLength={10} required value={address.mobile} onChange={e => setAddress({...address, mobile: e.target.value.replace(/\D/g, '')})} className="w-full text-base text-gray-700 border-b border-gray-200 py-1 focus:outline-none focus:border-brand-orange transition-colors bg-transparent" placeholder="Mobile Number" />
                   </div>
                 </div>
               </div>
@@ -417,7 +435,7 @@ export function CheckoutPage() {
                 </button>
               ) : step === 2 ? (
                 <button 
-                  onClick={() => setStep(3)}
+                  onClick={handleProceedToPayment}
                   className="w-full bg-gradient-to-r from-brand-orange to-brand-maroon text-white font-bold text-base rounded-xl py-4 shadow-lg shadow-brand-orange/20 hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
                 >
                   Proceed to Payment
@@ -485,7 +503,7 @@ export function CheckoutPage() {
             </button>
           ) : step === 2 ? (
             <button 
-              onClick={() => setStep(3)}
+              onClick={handleProceedToPayment}
               className="w-full bg-gradient-to-r from-brand-orange to-brand-maroon text-white font-bold text-base rounded-xl py-4 shadow-lg shadow-brand-orange/20 hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
             >
               Proceed to Payment
