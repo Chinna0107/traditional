@@ -16,6 +16,7 @@ export function HomePage() {
   const container = useRef(null);
   const { products, categories, loading } = useStoreData();
   const [banners, setBanners] = React.useState([]);
+  const [currentSlide, setCurrentSlide] = React.useState(0);
 
   React.useEffect(() => {
     const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
@@ -24,6 +25,14 @@ export function HomePage() {
       .then(d => { if (d.banners) setBanners(d.banners); })
       .catch(e => console.error(e));
   }, []);
+
+  React.useEffect(() => {
+    if (banners.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % banners.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [banners.length]);
   useGSAP(() => {
     if (!loading) {
       gsap.from('.animate-section', {
@@ -46,22 +55,38 @@ export function HomePage() {
       {/* Hero Banner Section */}
       <div className="animate-section px-4 py-4 md:py-8">
         {banners.length > 0 ? (
-          <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory hide-scrollbar">
-            {banners.map((banner) => (
-              <div key={banner.id} className="relative w-full md:w-[75%] h-48 md:h-[400px] shrink-0 snap-center rounded-2xl overflow-hidden shadow-lg border border-gray-100 mx-auto">
-                <img src={banner.image_url} alt={banner.title} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent flex flex-col justify-center px-6 md:px-16">
-                  <h2 className="text-white text-2xl md:text-5xl font-bold mb-4 leading-tight font-serif tracking-wide drop-shadow-lg">
-                    {banner.title}
-                  </h2>
-                  {(banner.link_url || banner.link_url === '') && (
-                    <Link to={banner.link_url || "/category/all"} className="bg-gradient-to-r from-brand-gold to-yellow-500 text-brand-maroon text-xs md:text-base font-bold px-8 py-3 md:py-4 rounded-xl w-fit shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
-                      SHOP NOW
-                    </Link>
-                  )}
+          <div className="relative w-full md:w-[75%] h-48 md:h-[400px] rounded-2xl overflow-hidden shadow-lg border border-gray-100 mx-auto">
+            <div 
+              className="flex h-full transition-transform duration-700 ease-in-out" 
+              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+            >
+              {banners.map((banner) => (
+                <div key={banner.id} className="relative w-full h-full shrink-0">
+                  <img src={banner.image_url} alt={banner.title} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent flex flex-col justify-center px-6 md:px-16">
+                    <h2 className="text-white text-2xl md:text-5xl font-bold mb-4 leading-tight font-serif tracking-wide drop-shadow-lg">
+                      {banner.title}
+                    </h2>
+                    {(banner.link_url || banner.link_url === '') && (
+                      <Link to={banner.link_url || "/category/all"} className="bg-gradient-to-r from-brand-gold to-yellow-500 text-brand-maroon text-xs md:text-base font-bold px-8 py-3 md:py-4 rounded-xl w-fit shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
+                        SHOP NOW
+                      </Link>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+            
+            {/* Slider Dots */}
+            <div className="absolute bottom-4 md:bottom-6 left-0 right-0 flex justify-center gap-2">
+              {banners.map((_, i) => (
+                <button 
+                  key={i} 
+                  onClick={() => setCurrentSlide(i)}
+                  className={`h-1.5 md:h-2 rounded-full transition-all ${i === currentSlide ? 'bg-white w-6 md:w-8' : 'bg-white/50 w-1.5 md:w-2 hover:bg-white/80'}`}
+                />
+              ))}
+            </div>
           </div>
         ) : (
           <div className="flex justify-center">
