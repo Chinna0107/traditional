@@ -8,7 +8,7 @@ export function AdminCouponsPage() {
   const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editCoupon, setEditCoupon] = useState(null);
-  const [formData, setFormData] = useState({ code: "", type: "percentage", value: 0, min_purchase: 0, max_discount: 0, expires_at: "", is_active: true });
+  const [formData, setFormData] = useState({ code: "", discount_type: "percentage", discount_value: 0, min_order_value: 0, expires_at: "", is_active: true });
   const [saving, setSaving] = useState(false);
   const [isNew, setIsNew] = useState(false);
 
@@ -30,7 +30,7 @@ export function AdminCouponsPage() {
   };
 
   const handleAdd = () => {
-    setFormData({ code: "", type: "percentage", value: 0, min_purchase: 0, max_discount: 0, expires_at: "", is_active: true });
+    setFormData({ code: "", discount_type: "percentage", discount_value: 0, min_order_value: 0, expires_at: "", is_active: true });
     setEditCoupon({});
     setIsNew(true);
   };
@@ -110,11 +110,10 @@ export function AdminCouponsPage() {
             
             <div className="space-y-2">
               <p className="font-serif text-xl font-bold text-[#5C4033]">
-                {coupon.type === "percentage" ? `${coupon.value}% OFF` : `₹${coupon.value} OFF`}
+                {coupon.discount_type === "percentage" ? `${coupon.discount_value}% OFF` : `₹${coupon.discount_value} OFF`}
               </p>
               <div className="text-xs text-[#5C4033]/60 font-sans space-y-1">
-                <p>Min Purchase: ₹{coupon.min_purchase}</p>
-                {coupon.type === "percentage" && <p>Max Discount: ₹{coupon.max_discount}</p>}
+                <p>Min Purchase: ₹{coupon.min_order_value}</p>
                 {coupon.expires_at && (
                   <p className="flex items-center gap-1 text-[#C16E4F]">
                     <Calendar className="w-3.5 h-3.5" /> Expires: {new Date(coupon.expires_at).toLocaleDateString("en-IN")}
@@ -144,7 +143,7 @@ export function AdminCouponsPage() {
                 </div>
                 <div>
                   <label className="text-xs font-sans font-semibold text-[#5C4033]/70 mb-1 block">Discount Type</label>
-                  <select value={formData.type} onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                  <select value={formData.discount_type} onChange={(e) => setFormData({ ...formData, discount_type: e.target.value })}
                     className="w-full px-3 py-2 rounded-lg bg-[#FDFBF7] border border-[#C16E4F]/10 focus:outline-none">
                     <option value="percentage">Percentage (%)</option>
                     <option value="fixed">Fixed Amount (₹)</option>
@@ -154,23 +153,16 @@ export function AdminCouponsPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-sans font-semibold text-[#5C4033]/70 mb-1 block">Discount Value</label>
-                  <input type="number" value={formData.value} onChange={(e) => setFormData({ ...formData, value: Number(e.target.value) })}
+                  <input type="number" value={formData.discount_value} onChange={(e) => setFormData({ ...formData, discount_value: Number(e.target.value) })}
                     className="w-full px-3 py-2 rounded-lg bg-[#FDFBF7] border border-[#C16E4F]/10 focus:outline-none" />
                 </div>
                 <div>
                   <label className="text-xs font-sans font-semibold text-[#5C4033]/70 mb-1 block">Min Purchase (₹)</label>
-                  <input type="number" value={formData.min_purchase} onChange={(e) => setFormData({ ...formData, min_purchase: Number(e.target.value) })}
+                  <input type="number" value={formData.min_order_value} onChange={(e) => setFormData({ ...formData, min_order_value: Number(e.target.value) })}
                     className="w-full px-3 py-2 rounded-lg bg-[#FDFBF7] border border-[#C16E4F]/10 focus:outline-none" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                {formData.type === "percentage" && (
-                  <div>
-                    <label className="text-xs font-sans font-semibold text-[#5C4033]/70 mb-1 block">Max Discount (₹)</label>
-                    <input type="number" value={formData.max_discount} onChange={(e) => setFormData({ ...formData, max_discount: Number(e.target.value) })}
-                      className="w-full px-3 py-2 rounded-lg bg-[#FDFBF7] border border-[#C16E4F]/10 focus:outline-none" />
-                  </div>
-                )}
                 <div>
                   <label className="text-xs font-sans font-semibold text-[#5C4033]/70 mb-1 block">Expires At (Optional)</label>
                   <input type="date" value={formData.expires_at} onChange={(e) => setFormData({ ...formData, expires_at: e.target.value })}

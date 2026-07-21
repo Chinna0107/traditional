@@ -393,6 +393,11 @@ export function AdminProductsPage() {
                     className="w-4 h-4 text-[#C16E4F]" />
                   <label htmlFor="is_offer" className="text-sm font-sans font-semibold text-[#5C4033] cursor-pointer">Offers</label>
                 </div>
+                <div className="flex items-center gap-2">
+                  <input type="checkbox" id="is_festive" checked={formData.is_festive || false} onChange={(e) => setFormData({ ...formData, is_festive: e.target.checked })}
+                    className="w-4 h-4 text-[#C16E4F]" />
+                  <label htmlFor="is_festive" className="text-sm font-sans font-semibold text-[#5C4033] cursor-pointer">Festive Collection</label>
+                </div>
               </div>
             </div>
             

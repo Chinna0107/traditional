@@ -7,6 +7,7 @@ export const useCartStore = create(
     (set, get) => ({
       items: [],
       deliveryCharge: 1,
+      appliedCoupon: null,
       
       addToCart: (product, variant, qty = 1) => {
         set((state) => {
@@ -45,7 +46,10 @@ export const useCartStore = create(
         };
       }),
 
-      clearCart: () => set({ items: [] }),
+      clearCart: () => set({ items: [], appliedCoupon: null }),
+
+      applyCoupon: (coupon) => set({ appliedCoupon: coupon }),
+      removeCoupon: () => set({ appliedCoupon: null }),
 
       getSubtotal: () => {
         return get().items.reduce((sum, item) => {
@@ -65,9 +69,27 @@ export const useCartStore = create(
         }, 0);
       },
 
+      getDiscount: () => {
+        const subtotal = get().getSubtotal();
+        const coupon = get().appliedCoupon;
+        if (!coupon) return 0;
+        
+        let discount = 0;
+        if (coupon.discount_type === 'percentage') {
+          discount = subtotal * (coupon.discount_value / 100);
+          // Assuming max_discount is not available or handled via business rules, just calculate percentage
+          // if coupon.max_discount is available we could cap it:
+          // if (coupon.max_discount) discount = Math.min(discount, coupon.max_discount);
+        } else {
+          discount = coupon.discount_value; // flat amount
+        }
+        return discount > subtotal ? subtotal : discount;
+      },
+
       getTotal: () => {
         const subtotal = get().getSubtotal();
-        return subtotal > 0 ? subtotal + get().deliveryCharge : 0;
+        const discount = get().getDiscount();
+        return subtotal > 0 ? (subtotal - discount) + get().deliveryCharge : 0;
       }
     }),
     {

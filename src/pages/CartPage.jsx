@@ -3,13 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { Trash2, Plus, Minus, MessageCircle, ShoppingCart } from 'lucide-react';
 import { Header } from '../components/Header';
 import { useCartStore } from '../store/useCartStore';
+import { useToastStore } from '../store/useToastStore';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
 export function CartPage() {
   const navigate = useNavigate();
-  const { items, removeFromCart, updateQuantity, getSubtotal, getTotal, deliveryCharge } = useCartStore();
-  const [couponCode, setCouponCode] = useState('');
+  const { items, removeFromCart, updateQuantity, getSubtotal, getTotal, getDiscount, deliveryCharge, appliedCoupon, applyCoupon, removeCoupon } = useCartStore();
+  const [couponCode, setCouponCode] = useState(appliedCoupon?.code || '');
+  const { showToast } = useToastStore();
   
   const container = React.useRef(null);
   
@@ -40,6 +42,27 @@ export function CartPage() {
 
   const subtotal = getSubtotal();
   const grandTotal = getTotal();
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    try {
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
+      const res = await fetch(`${BACKEND_URL}/general/validate-coupon`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: couponCode, cartValue: subtotal })
+      });
+      const data = await res.json();
+      if (data.success) {
+        applyCoupon(data.coupon);
+        showToast('Coupon applied successfully!');
+      } else {
+        showToast(data.error || 'Invalid coupon', 'error');
+      }
+    } catch (err) {
+      showToast('Error validating coupon', 'error');
+    }
+  };
 
   return (
     <div ref={container} className="min-h-screen bg-gray-50 pb-36">
@@ -138,13 +161,20 @@ export function CartPage() {
                 type="text" 
                 value={couponCode}
                 onChange={(e) => setCouponCode(e.target.value)}
+                disabled={!!appliedCoupon}
                 placeholder="Enter Coupon Code" 
-                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-all"
+                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-all disabled:bg-gray-50 disabled:text-gray-500"
               />
             </div>
-            <button className="bg-white text-brand-orange font-bold text-sm px-6 py-3 border border-brand-orange rounded-xl hover:bg-orange-50 transition-colors shadow-sm">
-              APPLY
-            </button>
+            {appliedCoupon ? (
+              <button onClick={() => { removeCoupon(); setCouponCode(''); }} className="bg-red-50 text-red-500 font-bold text-sm px-6 py-3 border border-red-200 rounded-xl hover:bg-red-100 transition-colors shadow-sm">
+                REMOVE
+              </button>
+            ) : (
+              <button onClick={handleApplyCoupon} className="bg-white text-brand-orange font-bold text-sm px-6 py-3 border border-brand-orange rounded-xl hover:bg-orange-50 transition-colors shadow-sm">
+                APPLY
+              </button>
+            )}
           </div>
 
           {/* Bill Details */}
@@ -155,6 +185,12 @@ export function CartPage() {
                 <span>Item Total ({items.length} items)</span>
                 <span className="font-medium text-gray-900">₹{subtotal.toFixed(2)}</span>
               </div>
+              {appliedCoupon && (
+                <div className="flex justify-between text-sm text-brand-orange">
+                  <span>Coupon Discount ({appliedCoupon.code})</span>
+                  <span className="font-medium">- ₹{getDiscount().toFixed(2)}</span>
+                </div>
+              )}
               <div className="flex justify-between text-sm text-gray-600">
                 <span>Delivery Charges</span>
                 <span className="font-medium text-green-600">

@@ -4,7 +4,7 @@ import { Search, Heart, ShoppingCart, Star, Flame, Sparkles, Circle, Gift, Wind,
 import { Header } from '../components/Header';
 import { ProductCard } from '../components/ProductCard';
 import { useStoreData } from '../store/useStoreData';
-import { festivals, materials } from '../data/categories'; // keep these static for now
+
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
@@ -178,6 +178,23 @@ export function HomePage() {
         </div>
       </div>
 
+      {/* Festive Collection */}
+      {products.filter(p => p.is_festive).length > 0 && (
+        <div className="animate-section mb-8 px-4 md:px-24">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="font-bold text-gray-900">Festive Collection</h3>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-6">
+            {products.filter(p => p.is_festive).slice(0, 5).map(product => (
+              <div key={product.id} className="hover:-translate-y-1 transition-transform">
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Offers Section */}
       {products.filter(p => p.is_offer).length > 0 && (
         <div className="animate-section mb-8 px-4 md:px-24">
@@ -211,41 +228,6 @@ export function HomePage() {
           </div>
         </div>
       )}
-      {/* Festival Collection */}
-      <section className="animate-section px-4 md:px-24 mb-8">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="font-bold text-gray-900">Festival Collection</h3>
-          <Link to="/category/all" className="text-xs font-semibold text-brand-orange">View all</Link>
-        </div>
-        <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-2 md:grid md:grid-cols-4 lg:grid-cols-6 md:overflow-visible">
-          {festivals.map((fest) => (
-            <Link key={fest.id} to={`/category/all`} className="w-[80px] md:w-auto flex flex-col items-center gap-2 flex-shrink-0 hover:-translate-y-1 transition-transform">
-              <div className="w-[80px] h-[80px] md:w-full md:h-32 rounded-xl bg-orange-50 overflow-hidden shadow-sm border border-orange-100 p-2 md:p-4">
-                <img src={imgMeditation} alt={fest.name} className="w-full h-full object-contain mix-blend-multiply opacity-80" />
-              </div>
-              <span className="text-[10px] md:text-sm font-bold text-gray-700 text-center leading-tight">{fest.name}</span>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Shop by Material */}
-      <section className="animate-section px-4 md:px-24 mb-12">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="font-bold text-gray-900">Shop by Material</h3>
-          <Link to="/category/all" className="text-xs font-semibold text-brand-orange">View all</Link>
-        </div>
-        <div className="flex justify-between md:justify-start md:gap-12">
-          {materials.map((mat) => (
-            <Link key={mat.id} to={`/category/all?model=${mat.name}`} className="flex flex-col items-center gap-2 hover:-translate-y-1 transition-transform">
-              <div className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-white shadow-sm border border-gray-100 overflow-hidden flex items-center justify-center p-2 md:p-3">
-                 <div className="w-full h-full rounded-full" style={{ backgroundColor: mat.color, opacity: 0.9 }}></div>
-              </div>
-              <span className="text-xs md:text-sm font-bold text-gray-700">{mat.name}</span>
-            </Link>
-          ))}
-        </div>
-      </section>
 
       {/* Customer Reviews */}
       <section className="px-4 md:px-24 mb-8">

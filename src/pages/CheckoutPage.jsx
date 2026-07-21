@@ -13,7 +13,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/a
 export function CheckoutPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { items, getTotal, clearCart } = useCartStore();
+  const { items, getTotal, getSubtotal, getDiscount, appliedCoupon, clearCart } = useCartStore();
   const { token, user } = useAuthStore();
   const { showToast } = useToastStore();
   
@@ -33,8 +33,10 @@ export function CheckoutPage() {
   const iconRef = useRef(null);
   const textRef = useRef(null);
 
+  const subtotal = getSubtotal();
   const grandTotal = getTotal();
-  const couponCode = location.state?.couponCode || '';
+  const discount = getDiscount();
+  const couponCode = appliedCoupon?.code || location.state?.couponCode || '';
 
   // Redirect to cart if empty
   useEffect(() => {
@@ -420,7 +422,17 @@ export function CheckoutPage() {
               </div>
 
               <div className="border-t border-dashed border-gray-200 pt-4 mb-6">
-                <div className="flex justify-between font-bold text-gray-900 text-xl">
+                <div className="flex justify-between text-sm text-gray-600 mb-2">
+                  <span>Item Total</span>
+                  <span className="font-medium text-gray-900">₹{subtotal.toFixed(2)}</span>
+                </div>
+                {appliedCoupon && (
+                  <div className="flex justify-between text-sm text-brand-orange mb-2">
+                    <span>Coupon ({appliedCoupon.code})</span>
+                    <span className="font-medium">- ₹{discount.toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between font-bold text-gray-900 text-xl pt-2 border-t border-gray-100">
                   <span>Grand Total</span>
                   <span className="text-brand-orange">₹{grandTotal.toFixed(2)}</span>
                 </div>
@@ -488,7 +500,10 @@ export function CheckoutPage() {
               ) : (
                 <>
                   <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Payable Amount</p>
-                  <p className="text-2xl font-bold text-gray-900 leading-none">₹{grandTotal.toFixed(2)}</p>
+                  <div className="flex flex-col">
+                    {appliedCoupon && <span className="text-[10px] text-brand-orange font-bold -mb-1">Code applied: {appliedCoupon.code}</span>}
+                    <p className="text-2xl font-bold text-gray-900 leading-none">₹{grandTotal.toFixed(2)}</p>
+                  </div>
                 </>
               )}
             </div>
