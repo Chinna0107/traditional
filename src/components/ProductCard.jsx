@@ -53,7 +53,8 @@ export function ProductCard({ product, layout = 'grid' }) {
           </div>
 
           <div className="flex items-center justify-between mt-auto">
-            <div className="flex items-baseline gap-1.5">
+            <div className="flex items-baseline gap-1.5 flex-wrap">
+              {defaultSize.mrp && <span className="text-xs text-gray-400 line-through">₹{defaultSize.mrp}</span>}
               <span className="text-base font-bold text-gray-900">₹{displayPrice}</span>
               <span className="text-[9px] text-[#C16E4F] font-bold bg-[#C16E4F]/10 px-1 py-0.5 rounded">{defaultSize.size}</span>
             </div>
@@ -104,7 +105,10 @@ export function ProductCard({ product, layout = 'grid' }) {
 
         <div className="flex flex-col gap-1 mb-3 mt-auto">
           <span className="text-[9px] text-[#C16E4F] font-bold bg-[#C16E4F]/10 px-1.5 py-0.5 rounded w-fit">{defaultSize.size}</span>
-          <span className="text-base font-bold text-gray-900">₹{displayPrice}</span>
+          <div className="flex items-baseline gap-1.5">
+            {defaultSize.mrp && <span className="text-xs text-gray-400 line-through">₹{defaultSize.mrp}</span>}
+            <span className="text-base font-bold text-gray-900">₹{displayPrice}</span>
+          </div>
         </div>
 
         <button onClick={handleAddToCart} className="w-full bg-[#C16E4F] text-white text-xs font-semibold py-2 rounded-lg hover:bg-[#A0522D] transition-colors flex items-center justify-center gap-1.5">

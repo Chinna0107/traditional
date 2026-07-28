@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Share2, Heart, ShoppingCart, Star, Plus, Minus, Settings, HandMetal, Clock, Sun } from 'lucide-react';
+import { Share2, Heart, ShoppingCart, Star, Plus, Minus, Settings, HandMetal, Clock, Sun, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Header } from '../components/Header';
 import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
@@ -27,6 +28,7 @@ export function ProductDetailPage() {
     : (product.image_url ? [product.image_url] : [])) : [];
     
   const [mainImg, setMainImg] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (productImages.length > 0 && !mainImg) {
@@ -103,8 +105,11 @@ export function ProductDetailPage() {
       <div className="md:max-w-full max-w-7xl mx-auto md:flex md:gap-8 md:p-8">
         {/* Product Image Section */}
         <div className="animate-image md:w-1/2 w-full bg-white md:rounded-3xl rounded-b-3xl shadow-sm overflow-hidden p-4 mb-4 md:mb-0 border border-[#C16E4F]/10">
-          <div className="w-full aspect-[4/3] rounded-2xl overflow-hidden mb-4 relative bg-gray-50 border border-gray-100 p-2">
-            <img src={mainImg || productImages[0]} alt={product.name} className="w-full h-full object-contain mix-blend-multiply" />
+          <div 
+            className="w-full aspect-[4/3] rounded-2xl overflow-hidden mb-4 relative bg-gray-50 border border-gray-100 p-2 cursor-pointer"
+            onClick={() => setIsModalOpen(true)}
+          >
+            <img src={mainImg || productImages[0]} alt={product.name} className="w-full h-full object-contain mix-blend-multiply hover:scale-105 transition-transform duration-300" />
           </div>
           <div className="flex gap-2 overflow-x-auto hide-scrollbar">
             {productImages.map((img, i) => (
@@ -139,6 +144,9 @@ export function ProductDetailPage() {
             </div>
             
             <div className="flex items-baseline gap-2 mb-3">
+              {selectedSize?.mrp && (
+                <span className="text-lg md:text-xl font-bold text-gray-400 line-through">₹{selectedSize.mrp}</span>
+              )}
               <span className="text-2xl md:text-4xl font-bold text-[#C16E4F]">₹{selectedSize?.price || 0}</span>
             </div>
             <p className="text-xs md:text-sm text-gray-600 leading-relaxed">
@@ -220,6 +228,35 @@ export function ProductDetailPage() {
           Buy Now
         </button>
       </div>
+
+      {/* Image Modal */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4"
+            onClick={() => setIsModalOpen(false)}
+          >
+            <button 
+              className="absolute top-4 right-4 text-white hover:text-gray-300 p-2 bg-black/50 rounded-full"
+              onClick={() => setIsModalOpen(false)}
+            >
+              <X className="w-8 h-8" />
+            </button>
+            <motion.img 
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.9 }}
+              src={mainImg || productImages[0]} 
+              alt={product.name} 
+              className="max-w-full max-h-[90vh] object-contain rounded-xl"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

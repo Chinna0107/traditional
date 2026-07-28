@@ -48,9 +48,9 @@ export function Footer() {
             <h3 className="text-lg font-bold text-brand-gold mb-2">Customer Service</h3>
             <Link to="/contact" className="text-sm text-orange-100/80 hover:text-brand-gold transition-colors">Contact Us</Link>
             <Link to="/about" className="text-sm text-orange-100/80 hover:text-brand-gold transition-colors">About Us</Link>
-            <Link to="#" className="text-sm text-orange-100/80 hover:text-brand-gold transition-colors">Shipping Policy</Link>
-            <Link to="#" className="text-sm text-orange-100/80 hover:text-brand-gold transition-colors">Returns & Exchanges</Link>
-            <Link to="#" className="text-sm text-orange-100/80 hover:text-brand-gold transition-colors">FAQs</Link>
+            <Link to="/shipping-policy" className="text-sm text-orange-100/80 hover:text-brand-gold transition-colors">Shipping Policy</Link>
+            <Link to="/returns-exchanges" className="text-sm text-orange-100/80 hover:text-brand-gold transition-colors">Returns & Exchanges</Link>
+            <Link to="/faqs" className="text-sm text-orange-100/80 hover:text-brand-gold transition-colors">FAQs</Link>
           </div>
 
           {/* Contact Info */}
@@ -61,13 +61,23 @@ export function Footer() {
               <span>1-1-738, Vinayaka temple road,<br/>Koratla, Telangana, India<br/><span className="text-xs text-orange-100/50">GSTIN: 36BANPK1643M1ZC</span></span>
             </div>
             <div className="flex items-center gap-3 text-sm text-orange-100/80">
-              <Phone className="w-5 h-5 shrink-0 text-brand-gold" />
-              <span>+91 90326 75205</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm text-orange-100/80">
-              <Mail className="w-5 h-5 shrink-0 text-brand-gold" />
-              <span>mokshamandir542@gmail.com</span>
-            </div>
+  <Phone className="w-5 h-5 shrink-0 text-brand-gold" />
+  <a
+    href="tel:+919032675205"
+    className="hover:text-brand-gold transition-colors duration-300"
+  >
+    +91 90326 75205
+  </a>
+</div>
+           <div className="flex items-center gap-3 text-sm text-orange-100/80">
+  <Mail className="w-5 h-5 shrink-0 text-brand-gold" />
+  <a
+    href="mailto:mokshamandir542@gmail.com"
+    className="hover:text-brand-gold transition-colors duration-300"
+  >
+    mokshamandir542@gmail.com
+  </a>
+</div>
           </div>
 
         </div>

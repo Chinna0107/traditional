@@ -14,7 +14,7 @@ export function AdminProductsPage() {
     name: "", description: "", sizes: [], stock: 0, image_url: "", images: [], color: "", category: "", model: "", is_active: true 
   });
   
-  const [newSize, setNewSize] = useState({ size: "", price: "" });
+  const [newSize, setNewSize] = useState({ size: "", price: "", mrp: "" });
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [isNew, setIsNew] = useState(false);
@@ -89,7 +89,7 @@ export function AdminProductsPage() {
 
   const handleAdd = () => {
     setFormData({ name: "", description: "", sizes: [], stock: 0, image_url: "", images: [], color: "", category: "", model: "", is_active: true });
-    setNewSize({ size: "", price: "" });
+    setNewSize({ size: "", price: "", mrp: "" });
     setEditProduct({});
     setIsNew(true);
   };
@@ -100,7 +100,7 @@ export function AdminProductsPage() {
       : (product.image_url ? [product.image_url] : []);
       
     setFormData({ ...product, model: product.model || "", sizes: product.sizes || [], images, color: product.color || "" });
-    setNewSize({ size: "", price: "" });
+    setNewSize({ size: "", price: "", mrp: "" });
     setEditProduct(product);
     setIsNew(false);
   };
@@ -118,8 +118,8 @@ export function AdminProductsPage() {
 
   const addSize = () => {
     if (newSize.size.trim() && newSize.price !== "") {
-      setFormData({ ...formData, sizes: [...formData.sizes, { size: newSize.size.trim(), price: Number(newSize.price) }] });
-      setNewSize({ size: "", price: "" });
+      setFormData({ ...formData, sizes: [...formData.sizes, { size: newSize.size.trim(), price: Number(newSize.price), mrp: newSize.mrp ? Number(newSize.mrp) : null }] });
+      setNewSize({ size: "", price: "", mrp: "" });
     }
   };
 
@@ -309,8 +309,9 @@ export function AdminProductsPage() {
                   {formData.sizes.map((s, idx) => (
                     <div key={idx} className="flex items-center gap-2 bg-[#FDFBF7] border border-[#C16E4F]/10 p-2 rounded-lg">
                       <span className="flex-1 font-semibold text-[#5C4033] pl-2">{s.size}</span>
-                      <span className="text-[#C16E4F] font-bold w-24">₹{s.price}</span>
-                      <button onClick={() => removeSize(idx)} className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"><Trash2 className="w-4 h-4" /></button>
+                      {s.mrp && <span className="text-gray-400 font-bold w-16 line-through text-xs text-right">₹{s.mrp}</span>}
+                      <span className="text-[#C16E4F] font-bold w-20 text-right">₹{s.price}</span>
+                      <button onClick={() => removeSize(idx)} className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors ml-2"><Trash2 className="w-4 h-4" /></button>
                     </div>
                   ))}
                   {formData.sizes.length === 0 && (
@@ -325,9 +326,11 @@ export function AdminProductsPage() {
                     <option value="Medium">Medium</option>
                     <option value="Large">Large</option>
                   </select>
-                  <input type="number" value={newSize.price} onChange={(e) => setNewSize({ ...newSize, price: e.target.value })} placeholder="Price (₹)"
-                    className="w-24 px-3 py-2 rounded-lg bg-white border border-[#C16E4F]/20 focus:outline-none focus:border-[#C16E4F]/50 text-sm" />
-                  <button onClick={addSize} className="bg-[#FDFBF7] text-[#C16E4F] border border-[#C16E4F]/20 px-4 rounded-lg font-semibold hover:bg-[#C16E4F]/10 transition-colors">Add</button>
+                  <input type="number" value={newSize.mrp} onChange={(e) => setNewSize({ ...newSize, mrp: e.target.value })} placeholder="MRP (₹)"
+                    className="w-20 px-2 py-2 rounded-lg bg-white border border-[#C16E4F]/20 focus:outline-none focus:border-[#C16E4F]/50 text-sm" />
+                  <input type="number" value={newSize.price} onChange={(e) => setNewSize({ ...newSize, price: e.target.value })} placeholder="Our Price (₹)"
+                    className="w-28 px-3 py-2 rounded-lg bg-white border border-[#C16E4F]/20 focus:outline-none focus:border-[#C16E4F]/50 text-sm" />
+                  <button onClick={addSize} className="bg-[#FDFBF7] text-[#C16E4F] border border-[#C16E4F]/20 px-3 rounded-lg font-semibold hover:bg-[#C16E4F]/10 transition-colors">Add</button>
                 </div>
               </div>
 

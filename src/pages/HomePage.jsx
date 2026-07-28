@@ -163,7 +163,7 @@ export function HomePage() {
       )}
 
       {/* Special Offers / Festival Banner */}
-      <div className="animate-section px-4 mb-12 flex justify-center mt-6">
+      {/* <div className="animate-section px-4 mb-12 flex justify-center mt-6">
         <div className="relative w-full md:w-[75%] h-32 md:h-[300px] rounded-2xl overflow-hidden shadow-lg border border-gray-100">
           <img src={imgAarti} alt="Diwali Special" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-brand-maroon/95 via-brand-maroon/80 to-transparent flex flex-col justify-center px-6 md:px-12">
@@ -176,7 +176,7 @@ export function HomePage() {
             </Link>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Festive Collection */}
       {products.filter(p => p.is_festive).length > 0 && (
