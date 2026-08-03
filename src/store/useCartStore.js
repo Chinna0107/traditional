@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { useToastStore } from './useToastStore';
+import { pixelAddToCart } from '../utils/pixel';
 
 export const useCartStore = create(
   persist(
@@ -23,6 +24,7 @@ export const useCartStore = create(
           
           return { items: [...state.items, { product, variant, qty }] };
         });
+        pixelAddToCart(product, variant, qty);
         useToastStore.getState().showToast(`Added ${product.name} to cart!`);
       },
       

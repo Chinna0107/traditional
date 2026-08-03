@@ -6,6 +6,7 @@ import { Header } from '../components/Header';
 import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
 import { useStoreData } from '../store/useStoreData';
+import { pixelViewContent } from '../utils/pixel';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
@@ -40,6 +41,10 @@ export function ProductDetailPage() {
       setSelectedSize(product.sizes[0]);
     }
   }, [product, selectedSize]);
+
+  useEffect(() => {
+    if (product && selectedSize) pixelViewContent(product, selectedSize);
+  }, [product?.id, selectedSize?.size]);
 
   useGSAP(() => {
     if (product) {
@@ -83,6 +88,15 @@ export function ProductDetailPage() {
 
   const handleAddToCart = () => {
     addToCart(product, selectedSize || { size: 'Standard', price: 0 }, quantity);
+  };
+
+  const handleShare = () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      navigator.share({ title: product.name, url });
+    } else {
+      navigator.clipboard.writeText(url);
+    }
   };
 
   const handleBuyNow = () => {
@@ -215,6 +229,18 @@ export function ProductDetailPage() {
 
       {/* Sticky Bottom Bar */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-4 pb-safe flex gap-3 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] max-w-5xl mx-auto w-full">
+        <button
+          onClick={() => toggleWishlist(product.id)}
+          className="p-3.5 rounded-xl border border-gray-200 flex items-center justify-center"
+        >
+          <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-[#C16E4F] text-[#C16E4F]' : 'text-gray-500'}`} />
+        </button>
+        <button
+          onClick={handleShare}
+          className="p-3.5 rounded-xl border border-gray-200 flex items-center justify-center"
+        >
+          <Share2 className="w-5 h-5 text-gray-500" />
+        </button>
         <button 
           onClick={handleAddToCart}
           className="flex-1 border border-[#C16E4F] text-[#C16E4F] font-bold text-sm rounded-xl py-3.5 flex items-center justify-center gap-2"

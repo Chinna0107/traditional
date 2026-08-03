@@ -1,13 +1,19 @@
 import React, { useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { CheckCircle2, Package, ArrowRight, ShoppingBag } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Header } from '../components/Header';
 import confetti from 'canvas-confetti';
+import { pixelPurchase } from '../utils/pixel';
 
 export function OrderTrackingPage() {
   const { orderId } = useParams();
   const navigate = useNavigate();
+  const { state } = useLocation();
+
+  useEffect(() => {
+    if (state?.total) pixelPurchase(orderId, state.total);
+  }, []);
 
   useEffect(() => {
     // Fire a beautiful confetti burst on mount

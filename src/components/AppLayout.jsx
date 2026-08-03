@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { BottomNav } from './BottomNav';
 import { Toast } from './Toast';
-
 import { Footer } from './Footer';
+import { FloatingActionButton } from './FloatingActionButton';
 
 export function AppLayout({ children }) {
   const { pathname } = useLocation();
@@ -28,6 +28,9 @@ export function AppLayout({ children }) {
         
         {/* Footer */}
         <Footer />
+        
+        {/* Floating Buttons */}
+        <FloatingActionButton />
         
         {/* Bottom Navigation */}
         {showBottomNav && <BottomNav />}

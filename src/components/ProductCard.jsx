@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Heart, ShoppingCart, Star } from 'lucide-react';
+import { Heart, ShoppingCart, Star, Share2 } from 'lucide-react';
 import { useWishlistStore } from '../store/useWishlistStore';
 import { useCartStore } from '../store/useCartStore';
 
@@ -20,6 +20,17 @@ export function ProductCard({ product, layout = 'grid' }) {
     e.preventDefault();
     e.stopPropagation();
     toggleWishlist(product.id);
+  };
+
+  const handleShare = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const url = `${window.location.origin}/product/${product.id}`;
+    if (navigator.share) {
+      navigator.share({ title: product.name, url });
+    } else {
+      navigator.clipboard.writeText(url);
+    }
   };
 
   const handleAddToCart = (e) => {
@@ -64,12 +75,14 @@ export function ProductCard({ product, layout = 'grid' }) {
             </button>
           </div>
         </div>
-        <button 
-          onClick={handleWishlist}
-          className="absolute top-3 right-3 text-gray-300 hover:scale-110 transition-transform z-10"
-        >
-          <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-[#C16E4F] text-[#C16E4F]' : ''}`} />
-        </button>
+        <div className="absolute top-3 right-3 flex flex-col gap-1 z-10">
+          <button onClick={handleWishlist} className="text-gray-300 hover:scale-110 transition-transform">
+            <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-[#C16E4F] text-[#C16E4F]' : ''}`} />
+          </button>
+          <button onClick={handleShare} className="text-gray-300 hover:scale-110 transition-transform">
+            <Share2 className="w-4 h-4" />
+          </button>
+        </div>
       </Link>
     );
   }
@@ -79,9 +92,12 @@ export function ProductCard({ product, layout = 'grid' }) {
       onClick={handleCardClick}
       className="group flex flex-col bg-white rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-[#C16E4F]/10 cursor-pointer transition-all duration-300 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:-translate-y-1 h-full p-3 relative"
     >
-      <div className="absolute top-3 right-3 z-20">
+      <div className="absolute top-3 right-3 z-20 flex flex-col gap-1">
         <button onClick={handleWishlist} className="p-1 hover:scale-110 transition-transform bg-white/80 rounded-full shadow-sm">
           <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-[#C16E4F] text-[#C16E4F]' : 'text-gray-400'}`} />
+        </button>
+        <button onClick={handleShare} className="p-1 hover:scale-110 transition-transform bg-white/80 rounded-full shadow-sm">
+          <Share2 className="w-4 h-4 text-gray-400" />
         </button>
       </div>
 

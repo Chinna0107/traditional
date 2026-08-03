@@ -5,6 +5,7 @@ import { Header } from '../components/Header';
 import { useCartStore } from '../store/useCartStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useToastStore } from '../store/useToastStore';
+import { pixelInitiateCheckout } from '../utils/pixel';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
@@ -110,6 +111,7 @@ export function CheckoutPage() {
       showToast('Phone number must be exactly 10 digits.', 'error');
       return;
     }
+    pixelInitiateCheckout(items, grandTotal);
     setStep(3);
   };
 
@@ -166,9 +168,10 @@ export function CheckoutPage() {
             if (verifyData.success) {
               const createOrderData = await createOrder(paymentMethod);
               if (createOrderData.success) {
+                const orderTotal = grandTotal;
                 setTimeout(() => {
                   clearCart();
-                  navigate(`/order-tracking/${createOrderData.order.order_number}`);
+                  navigate(`/order-tracking/${createOrderData.order.order_number}`, { state: { total: orderTotal } });
                 }, 2000);
               } else {
                 showToast('Failed to place order after payment.', 'error');
