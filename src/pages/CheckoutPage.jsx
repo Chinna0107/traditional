@@ -169,9 +169,10 @@ export function CheckoutPage() {
               const createOrderData = await createOrder(paymentMethod);
               if (createOrderData.success) {
                 const orderTotal = grandTotal;
+                const orderItems = [...items];
                 setTimeout(() => {
                   clearCart();
-                  navigate(`/order-tracking/${createOrderData.order.order_number}`, { state: { total: orderTotal } });
+                  navigate(`/order-tracking/${createOrderData.order.order_number}`, { state: { total: orderTotal, items: orderItems } });
                 }, 2000);
               } else {
                 showToast('Failed to place order after payment.', 'error');

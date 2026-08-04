@@ -78,7 +78,6 @@ export function AdminOrdersPage() {
       alert(`Shipment created! AWB: ${data.awb}`);
     } catch (err) {
       alert(`Shipment status: ${err.message}`);
-    } finally {
       setShipping((p) => ({ ...p, [orderId]: false }));
     }
   };

@@ -22,9 +22,9 @@ export const useCartStore = create(
             return { items: newItems };
           }
           
+          pixelAddToCart(product, variant, qty);
           return { items: [...state.items, { product, variant, qty }] };
         });
-        pixelAddToCart(product, variant, qty);
         useToastStore.getState().showToast(`Added ${product.name} to cart!`);
       },
       

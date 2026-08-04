@@ -24,16 +24,19 @@ export const pixelAddToCart = (product, variant, qty = 1) => {
 export const pixelInitiateCheckout = (items, total) => {
   fbq('track', 'InitiateCheckout', {
     content_ids: items.map(i => String(i.product.id)),
+    content_type: 'product',
     num_items: items.reduce((s, i) => s + i.qty, 0),
     value: total,
     currency: 'INR',
   });
 };
 
-export const pixelPurchase = (orderId, total) => {
+export const pixelPurchase = (orderId, total, items = []) => {
   fbq('track', 'Purchase', {
+    content_ids: items.map(i => String(i.product.id)),
     content_type: 'product',
     order_id: String(orderId),
+    num_items: items.reduce((s, i) => s + i.qty, 0),
     value: total,
     currency: 'INR',
   });

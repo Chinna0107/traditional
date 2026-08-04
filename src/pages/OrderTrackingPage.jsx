@@ -12,7 +12,7 @@ export function OrderTrackingPage() {
   const { state } = useLocation();
 
   useEffect(() => {
-    if (state?.total) pixelPurchase(orderId, state.total);
+    if (state?.total) pixelPurchase(orderId, state.total, state.items || []);
   }, []);
 
   useEffect(() => {
