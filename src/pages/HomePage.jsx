@@ -17,12 +17,17 @@ export function HomePage() {
   const { products, categories, loading } = useStoreData();
   const [banners, setBanners] = React.useState([]);
   const [currentSlide, setCurrentSlide] = React.useState(0);
+  const [reviews, setReviews] = React.useState([]);
 
   React.useEffect(() => {
     const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
     fetch(`${url}/general/banners`)
       .then(r => r.json())
       .then(d => { if (d.banners) setBanners(d.banners); })
+      .catch(e => console.error(e));
+    fetch(`${url}/general/reviews`)
+      .then(r => r.json())
+      .then(d => { if (d.reviews) setReviews(d.reviews); })
       .catch(e => console.error(e));
   }, []);
 
@@ -63,16 +68,20 @@ export function HomePage() {
               {banners.map((banner) => (
                 <div key={banner.id} className="relative w-full h-full shrink-0">
                   <img src={banner.image_url} alt={banner.title} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent flex flex-col justify-center px-6 md:px-16">
-                    <h2 className="text-white text-2xl md:text-5xl font-bold mb-4 leading-tight font-serif tracking-wide drop-shadow-lg">
-                      {banner.title}
-                    </h2>
-                    {(banner.link_url || banner.link_url === '') && (
-                      <Link to={banner.link_url || "/category/all"} className="bg-gradient-to-r from-brand-gold to-yellow-500 text-brand-maroon text-xs md:text-base font-bold px-8 py-3 md:py-4 rounded-xl w-fit shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
-                        SHOP NOW
-                      </Link>
-                    )}
-                  </div>
+                  {(banner.title || banner.link_url) && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/25 to-transparent flex flex-col justify-center px-6 md:px-16">
+                      {banner.title && (
+                        <h2 className="text-white text-2xl md:text-5xl font-bold mb-4 leading-tight font-serif tracking-wide drop-shadow-lg">
+                          {banner.title}
+                        </h2>
+                      )}
+                      {banner.link_url && (
+                        <Link to={banner.link_url} className="bg-gradient-to-r from-brand-gold to-yellow-500 text-brand-maroon text-xs md:text-base font-bold px-8 py-3 md:py-4 rounded-xl w-fit shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
+                          SHOP NOW
+                        </Link>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -92,14 +101,6 @@ export function HomePage() {
           <div className="flex justify-center">
             <div className="relative w-full md:w-[75%] h-48 md:h-[400px] rounded-2xl overflow-hidden shadow-lg border border-gray-100">
               <img src={imgHeroBanner} alt="Hero Banner" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex flex-col justify-center px-6 md:px-16">
-                <h2 className="text-white text-2xl md:text-5xl font-bold mb-4 leading-tight font-serif tracking-wide drop-shadow-lg">
-                  Everything for <br/> Your Divine Rituals
-                </h2>
-                <Link to="/category/all" className="bg-gradient-to-r from-brand-gold to-yellow-500 text-brand-maroon text-xs md:text-base font-bold px-8 py-3 md:py-4 rounded-xl w-fit shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
-                  SHOP NOW
-                </Link>
-              </div>
             </div>
           </div>
         )}
@@ -230,30 +231,32 @@ export function HomePage() {
       )}
 
       {/* Customer Reviews */}
+      {reviews.length > 0 && (
       <section className="px-4 md:px-24 mb-8">
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-bold text-gray-900">Customer Reviews</h3>
-          <span className="text-xs font-semibold text-brand-orange cursor-pointer">View all</span>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[1,2,3].map((rev) => (
-            <div key={rev} className="bg-white border border-gray-100 p-4 md:p-6 rounded-2xl shadow-sm flex items-start gap-3">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-orange-100 overflow-hidden shrink-0 flex items-center justify-center text-brand-orange font-bold text-sm md:text-base">
-                PS
+        {/* Mobile: horizontal scroll, Desktop: grid */}
+        <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-2 md:grid md:grid-cols-3 md:overflow-visible">
+          {reviews.map(r => (
+            <div key={r.id} className="bg-white border border-gray-100 p-4 rounded-2xl shadow-sm flex items-start gap-3 w-[75vw] shrink-0 md:w-auto">
+              <div className="w-10 h-10 rounded-full bg-orange-100 shrink-0 flex items-center justify-center text-brand-orange font-bold text-sm">
+                {r.name.slice(0,2).toUpperCase()}
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs md:text-sm font-bold text-gray-900">Priya Sharma</span>
+                  <span className="text-xs font-bold text-gray-900">{r.name}</span>
                   <div className="flex">
-                    {[1,2,3,4,5].map(i => <Star key={i} className="w-2.5 h-2.5 md:w-3 md:h-3 fill-yellow-400 text-yellow-400" />)}
+                    {[1,2,3,4,5].map(s => <Star key={s} className={`w-2.5 h-2.5 ${s <= r.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'}`} />)}
                   </div>
                 </div>
-                <p className="text-[10px] md:text-xs text-gray-600 italic">"Excellent quality and packaging. Truly divine experience!"</p>
+                <p className="text-[10px] text-gray-600 italic">"{r.review}"</p>
               </div>
             </div>
           ))}
         </div>
       </section>
+      )}
 
       </div>
 

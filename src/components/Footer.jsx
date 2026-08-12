@@ -58,7 +58,8 @@ export function Footer() {
             <h3 className="text-lg font-bold text-brand-gold mb-2">Contact Us</h3>
             <div className="flex items-start gap-3 text-sm text-orange-100/80">
               <MapPin className="w-5 h-5 shrink-0 text-brand-gold" />
-              <span>1-1-738, Vinayaka temple road,<br/>Koratla, Telangana, India<br/><span className="text-xs text-orange-100/50">GSTIN: 36BANPK1643M1ZC</span></span>
+              <span>1ST FLOOR, 8-3-960/3/1, Raghava Nilayam
+,  Srinagar colony, <br/>NEAR AXIS BANK,<br/>Hyderabad, Telangana, <br/>500073,  India<br/></span>
             </div>
             <div className="flex items-center gap-3 text-sm text-orange-100/80">
   <Phone className="w-5 h-5 shrink-0 text-brand-gold" />

@@ -31,6 +31,7 @@ import { AdminBannersPage } from './pages/admin/AdminBannersPage';
 import { AdminCouponsPage } from './pages/admin/AdminCouponsPage';
 import { AdminReportsPage } from './pages/admin/AdminReportsPage';
 import { AdminCategoriesPage } from './pages/admin/AdminCategoriesPage';
+import { AdminReviewsPage } from './pages/admin/AdminReviewsPage';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -62,6 +63,7 @@ function App() {
                   <Route path="banners" element={<AdminBannersPage />} />
                   <Route path="/coupons" element={<AdminCouponsPage />} />
                   <Route path="/reports" element={<AdminReportsPage />} />
+                  <Route path="/reviews" element={<AdminReviewsPage />} />
                 </Routes>
               </AdminLayout>
             } />

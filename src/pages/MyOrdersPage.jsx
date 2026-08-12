@@ -122,9 +122,8 @@ export function MyOrdersPage() {
                   <td class="from-box">
                       <div class="section-heading">From Address</div>
                       <div class="address-box">
-                          <strong>Moksha Mandir</strong><br>
-                          1-1-738, Vinayaka temple road,<br>
-                          Koratla, Telangana, India<br>
+                          <span>1ST FLOOR, 8-3-960/3/1, Raghava Nilayam
+,  Srinagar colony, <br/>NEAR AXIS BANK,<br/>Hyderabad, Telangana, <br/>500073,  India<br/></span>
                           <strong>Phone:</strong> +91 90326 75205
                       </div>
                   </td>

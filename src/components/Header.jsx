@@ -78,7 +78,7 @@ function DesktopFullHeader({ cartCount, wishlistCount, token, user, handleLogout
         <div className="w-full mx-auto flex items-center justify-between">
           
           <Link to="/" className="flex items-center gap-2">
-            <img src="/image.png" alt="Logo" className="h-10 object-contain mix-blend-multiply" />
+            <img src="/image.png" alt="Logo" className="h-14 object-contain mix-blend-multiply" />
             <span className="font-bold text-xl text-brand-maroon hidden lg:block tracking-tight">Mokshamandir</span>
           </Link>
 
@@ -158,8 +158,7 @@ export function Header({ variant = 'default', title, showShare = false }) {
       <div className={`fixed top-0 left-0 w-[280px] h-full bg-white z-[101] shadow-2xl transition-transform duration-300 md:hidden flex flex-col ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-4 flex items-center justify-between border-b border-gray-100 bg-orange-50/50">
           <div className="flex items-center gap-2">
-            <img src="/image.png" alt="Logo" className="h-8 object-contain mix-blend-multiply" />
-            <span className="font-bold text-lg text-brand-maroon">Mokshamandir</span>
+            <img src="/image.png" alt="Logo" className="h-12 object-contain mix-blend-multiply" />
           </div>
           <button onClick={() => setMobileMenuOpen(false)} className="p-1.5 text-gray-500 hover:text-gray-800 bg-white rounded-full shadow-sm">
             <X className="w-5 h-5" />
@@ -202,7 +201,7 @@ export function Header({ variant = 'default', title, showShare = false }) {
                 </button>
 
                 <Link to="/" className="flex items-center gap-2">
-                  <img src="/image.png" alt="Moksha Mandir" className="h-8 object-contain mix-blend-multiply" />
+                  <img src="/image.png" alt="Moksha Mandir" className="h-12 object-contain mix-blend-multiply" />
                   <span className="font-bold text-lg text-brand-maroon">Mokshamandir</span>
                 </Link>
               </div>

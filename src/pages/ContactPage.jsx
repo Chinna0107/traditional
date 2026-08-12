@@ -31,11 +31,9 @@ export function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900 mb-1">Our Location</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    1-1-738, Vinayaka temple road,<br/>
-                    Koratla, Telangana, India
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">GSTIN: 36BANPK1643M1ZC</p>
+                  <span>1ST FLOOR, 8-3-960/3/1, Raghava Nilayam
+,  Srinagar colony, <br/>NEAR AXIS BANK,<br/>Hyderabad, Telangana, <br/>500073,  India<br/></span>
+                  {/* <p className="text-xs text-gray-500 mt-1">GSTIN: 36BANPK1643M1ZC</p> */}
                 </div>
               </div>
               
