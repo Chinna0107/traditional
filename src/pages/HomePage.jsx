@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Heart, ShoppingCart, Star, Flame, Sparkles, Circle, Gift, Wind, Bell, Droplet, Flower2, Cloud, Grid } from 'lucide-react';
+import { Search, Heart, ShoppingCart, Star, Flame, Sparkles, Circle, Gift, Wind, Bell, Droplet, Flower2, Cloud, Grid, BadgeCheck, WalletCards, Truck, RotateCcw, MessageCircle } from 'lucide-react';
 import { Header } from '../components/Header';
 import { ProductCard } from '../components/ProductCard';
 import { useStoreData } from '../store/useStoreData';
@@ -257,6 +257,27 @@ export function HomePage() {
         </div>
       </section>
       )}
+
+      {/* Why Shop Moksha Mandir */}
+      <section className="animate-section px-4 md:px-24 mb-8">
+        <h3 className="font-bold text-gray-900 mb-4">Why Shop Moksha Mandir?</h3>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          {[
+            { icon: BadgeCheck, label: '100% Authentic & Lab Certified' },
+            { icon: WalletCards, label: 'Secure Payments' },
+            { icon: Truck, label: 'Pan India Delivery' },
+            { icon: RotateCcw, label: 'Easy Returns & Refunds' },
+            { icon: MessageCircle, label: 'Dedicated Support' },
+          ].map(({ icon: Icon, label }) => (
+            <div key={label} className="flex flex-col items-center text-center gap-2 bg-white border border-[#C16E4F]/10 rounded-2xl p-4 shadow-sm">
+              <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center">
+                <Icon className="w-5 h-5 text-[#C16E4F]" strokeWidth={1.8} />
+              </div>
+              <span className="text-[11px] font-semibold text-[#5C4033] leading-tight">{label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
 
       </div>
 
