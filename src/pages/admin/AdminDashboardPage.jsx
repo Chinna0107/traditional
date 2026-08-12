@@ -27,10 +27,16 @@ export function AdminDashboardPage() {
 
   const revenue = orders.filter((o) => o.status !== "cancelled").reduce((s, o) => s + Number(o.total), 0);
   const pending = orders.filter((o) => o.status === "paid" || o.status === "processing" || o.status === "pending").length;
+  const deliveredAmount = orders.filter((o) => o.status === "delivered").reduce((s, o) => s + Number(o.total), 0);
+  const cancelledAmount = orders.filter((o) => o.status === "cancelled").reduce((s, o) => s + Number(o.total), 0);
+  const refundAmount = cancelledAmount; // refunds = cancelled order totals
 
   const stats = [
     { label: "Total Orders", value: orders.length, icon: <ShoppingBag className="w-6 h-6" />, color: "bg-[#C16E4F]/10 text-[#C16E4F]" },
     { label: "Total Revenue", value: `₹${revenue.toLocaleString()}`, icon: <TrendingUp className="w-6 h-6" />, color: "bg-green-100 text-green-600" },
+    { label: "Delivered Amount", value: `₹${deliveredAmount.toLocaleString()}`, icon: <Package className="w-6 h-6" />, color: "bg-emerald-100 text-emerald-600" },
+    { label: "Cancelled Amount", value: `₹${cancelledAmount.toLocaleString()}`, icon: <TrendingUp className="w-6 h-6" />, color: "bg-red-100 text-red-500" },
+    { label: "Refund Amount", value: `₹${refundAmount.toLocaleString()}`, icon: <Clock className="w-6 h-6" />, color: "bg-orange-100 text-orange-500" },
     { label: "Customers", value: users.length, icon: <Users className="w-6 h-6" />, color: "bg-blue-100 text-blue-600" },
     { label: "Pending Orders", value: pending, icon: <Clock className="w-6 h-6" />, color: "bg-[#D4AF37]/10 text-[#D4AF37]" },
     { label: "Products", value: productsCount, icon: <Package className="w-6 h-6" />, color: "bg-purple-100 text-purple-600" },
@@ -48,7 +54,7 @@ export function AdminDashboardPage() {
       <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#5C4033] mb-6 sm:mb-8">Admin Dashboard</h1>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
         {stats.map((s, i) => (
           <motion.div key={s.label} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
             className="bg-white rounded-xl sm:rounded-2xl border border-[#C16E4F]/10 p-3 sm:p-4 flex flex-col gap-2 sm:gap-3">

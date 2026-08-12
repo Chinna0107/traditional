@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { Search, SlidersHorizontal, ArrowLeft, Filter, X, ChevronDown, Check } from 'lucide-react';
 import { Header } from '../components/Header';
@@ -20,6 +20,24 @@ export function CategoryListingPage() {
   
   const modelQuery = searchParams.get('model');
   const searchQuery = searchParams.get('search');
+  const focusSearch = searchParams.get('focus') === 'search';
+  const searchInputRef = useRef(null);
+  const [searchInput, setSearchInput] = useState(searchQuery || '');
+
+  useEffect(() => {
+    if (focusSearch && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [focusSearch]);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchInput.trim()) {
+      setSearchParams({ search: searchInput.trim() });
+    } else {
+      setSearchParams({});
+    }
+  };
   
   // Prevent body scroll when mobile filter is open
   useEffect(() => {
@@ -202,6 +220,24 @@ export function CategoryListingPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
         
+        {/* Search Bar */}
+        <form onSubmit={handleSearchSubmit} className="mb-4 flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-[#C16E4F]/10">
+          <Search className="w-4 h-4 text-[#C16E4F] shrink-0" />
+          <input
+            ref={searchInputRef}
+            type="text"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Search products..."
+            className="flex-1 text-sm text-[#5C4033] placeholder-[#5C4033]/40 outline-none bg-transparent"
+          />
+          {searchInput && (
+            <button type="button" onClick={() => { setSearchInput(''); setSearchParams({}); }} className="text-gray-400 hover:text-gray-600">
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </form>
+
         {/* Filter and Sort Bar for Mobile / Top Bar for Desktop */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 bg-white p-3 md:p-4 rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-[#C16E4F]/10 gap-3">
           <div className="flex items-center justify-between w-full sm:w-auto gap-4">
