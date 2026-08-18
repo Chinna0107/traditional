@@ -96,5 +96,44 @@ export const useAuthStore = create((set, get) => ({
     set({ user: null, token: null, addresses: [], orders: [] });
   },
 
+  forgotPassword: async (email) => {
+    set({ loading: true, error: null });
+    try {
+      await api.post('/auth/forgot-password', { email });
+      set({ loading: false });
+      return { success: true };
+    } catch (err) {
+      const error = err.response?.data?.error || 'Failed to send OTP';
+      set({ loading: false, error });
+      return { success: false, error };
+    }
+  },
+
+  verifyForgotOtp: async (email, otp) => {
+    set({ loading: true, error: null });
+    try {
+      await api.post('/auth/verify-forgot-otp', { email, otp });
+      set({ loading: false });
+      return { success: true };
+    } catch (err) {
+      const error = err.response?.data?.error || 'Invalid OTP';
+      set({ loading: false, error });
+      return { success: false, error };
+    }
+  },
+
+  resetPassword: async (email, otp, newPassword) => {
+    set({ loading: true, error: null });
+    try {
+      await api.post('/auth/reset-password', { email, otp, newPassword });
+      set({ loading: false });
+      return { success: true };
+    } catch (err) {
+      const error = err.response?.data?.error || 'Failed to reset password';
+      set({ loading: false, error });
+      return { success: false, error };
+    }
+  },
+
   isLoggedIn: () => !!get().token,
 }));

@@ -279,6 +279,16 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* About Moksha Mandir */}
+      <section className="animate-section px-4 md:px-24 mb-12">
+        <div className="bg-orange-50 rounded-2xl p-6 md:p-8 text-center border border-[#C16E4F]/20 shadow-sm">
+          <h3 className="font-bold text-[#5C4033] text-xl mb-4">About Moksha Mandir</h3>
+          <p className="text-gray-700 text-sm md:text-base leading-relaxed max-w-4xl mx-auto">
+            Moksha Mandir is your trusted destination for authentic, lab-certified Rudraksha, premium Shaligram, and sacred spiritual items. We are dedicated to bringing the divine essence of Sanatana Dharma to your doorstep. With a commitment to purity, tradition, and customer satisfaction, we ensure that every sacred item you receive carries the profound spiritual energy it is meant to hold. Embrace a journey of devotion and inner peace with our carefully curated selection.
+          </p>
+        </div>
+      </section>
+
       </div>
 
     </div>

@@ -162,6 +162,11 @@ export function ProductDetailPage() {
                 <span className="text-lg md:text-xl font-bold text-gray-400 line-through">₹{selectedSize.mrp}</span>
               )}
               <span className="text-2xl md:text-4xl font-bold text-[#C16E4F]">₹{selectedSize?.price || 0}</span>
+              {selectedSize?.mrp && selectedSize?.price && selectedSize.mrp > selectedSize.price && (
+                <span className="ml-2 text-sm font-bold text-green-600 bg-green-50 px-2 py-1 rounded border border-green-200">
+                  {Math.round(((selectedSize.mrp - selectedSize.price) / selectedSize.mrp) * 100)}% OFF
+                </span>
+              )}
             </div>
             <p className="text-xs md:text-sm text-gray-600 leading-relaxed">
               {product.description}
